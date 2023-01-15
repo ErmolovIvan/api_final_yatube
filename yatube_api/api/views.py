@@ -3,15 +3,23 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, mixins, filters
 from rest_framework.pagination import LimitOffsetPagination
 
-from posts.models import Post, Comment, Follow
-from .serializers import PostSerializer, CommentSerializer, FollowSerializer
+from posts.models import Post, Comment, Follow, Group
+from .serializers import (PostSerializer,
+                          CommentSerializer,
+                          FollowSerializer,
+                          GroupSerializer)
 from .permissions import IsAuthenticated
+
+
+class GroupViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
 
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticated, IsAuthenticated]
+    permission_classes = (IsAuthenticated,)
     pagination_class = LimitOffsetPagination
 
     def perform_create(self, serializer):
@@ -20,7 +28,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = [permissions.IsAuthenticated, IsAuthenticated]
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         post_id = self.kwargs.get('post_id')
