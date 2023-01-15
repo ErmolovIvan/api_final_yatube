@@ -52,5 +52,4 @@ class FollowViewSet(
     search_fields = ('following__username',)
 
     def get_queryset(self):
-        user = self.request.user
-        return user.follower.all()
+        return self.request.user.follower.all()
